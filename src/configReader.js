@@ -1,31 +1,29 @@
 const fs = require("fs");
 
-module.exports = {
-  /**
-   * @function getDefaultConfig - Get Default compiler config from assigned path
-   * @param {string} path - The path to compilerconfig.json.defaults
-   * @returns {object} - Object contains fileName and OutputDir
-   */
-  getDefaultConfig: function (path) {
-    try {
-      const data = fs.readFileSync(path, "utf8");
-      const json = JSON.parse(data);
-      let sassDefaultConfig = json["compilers"]["sass"];
+/**
+ * @function getDefaultConfig - Get Default compiler config from assigned path
+ * @param {string} path - The path to compilerconfig.json.defaults
+ * @returns {object} - Object contains fileName and OutputDir
+ */
+module.exports = function (path) {
+  if (!path) {
+    throw new Error("Default config path is not provided.");
+  }
 
-      if (!sassDefaultConfig) {
-        return {};
-      }
+  const data = fs.readFileSync(path, "utf8");
+  const json = JSON.parse(data);
 
-      let autoPrefix = sassDefaultConfig["autoPrefix"];
+  let sassDefaultConfig = json["compilers"]["sass"];
 
-      if (autoPrefix) {
-        autoPrefix = autoPrefix.split(",");
-        sassDefaultConfig["autoPrefix"] = autoPrefix;
-      }
+  if (!sassDefaultConfig) {
+    throw new Error("Sass config is not provided.");
+  }
 
-      return sassDefaultConfig;
-    } catch (error) {
-      console.error(error);
-    }
-  },
+  let autoPrefix = sassDefaultConfig["autoPrefix"];
+
+  if (autoPrefix) {
+    sassDefaultConfig["autoPrefix"] = autoPrefix.split(",");
+  }
+
+  return sassDefaultConfig;
 };

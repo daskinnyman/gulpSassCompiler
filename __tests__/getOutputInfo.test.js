@@ -1,9 +1,20 @@
 const getOutputInfo = require("../src/utils/getOutputInfo");
 
 it("Should get file name and outputDir", () => {
-  const filePath = "./wwwroot/css/foo.css";
-  const { fileName, outputDir } = getOutputInfo(filePath);
+  expect(getOutputInfo("./wwwroot/css/foo.css")).toMatchObject({
+    fileName: "foo",
+    outputDir: "./wwwroot/css",
+  });
+});
 
-  expect(fileName).toBe('foo');
-  expect(outputDir).toBe('./wwwroot/css');
+it("Should throw Output path is not provided Error", () => {
+  expect(() => {
+    getOutputInfo(null);
+  }).toThrow("Output path is not provided.");
+});
+
+it("Should throw Output file must be a css.", () => {
+  expect(() => {
+    getOutputInfo("./wwwroot/css/foo");
+  }).toThrow("Output file must be a css.");
 });

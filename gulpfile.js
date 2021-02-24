@@ -10,19 +10,21 @@ const autoprefixer = require("autoprefixer");
 const cssnano = require("cssnano");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
-const configReader = require("./src/configReader");
+const getDefaultConfig = require("./src/configReader");
 const getOutputInfo = require("./src/utils/getOutputInfo");
 const getMergedConfig = require("./src/utils/getMergedConfig");
 const sassConfigs = require(CUSTOM_PATH);
 
 gulp.task("sass", function (done) {
-  const defaultConfig = configReader.getDefaultConfig(DEFAULT_PATH);
+  const defaultConfig = getDefaultConfig(DEFAULT_PATH);
 
   let browserListConfig = {};
 
   if (defaultConfig && defaultConfig.autoPrefix) {
     browserListConfig["overrideBrowserslist"] = defaultConfig.autoPrefix;
   }
+
+  delete defaultConfig.autoPrefix;
 
   sassConfigs.map((config) => {
     const gulpSassConfig = getMergedConfig(defaultConfig, config.options);
